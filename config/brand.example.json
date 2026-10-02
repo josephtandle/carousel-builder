@@ -1,0 +1,59 @@
+{
+  "_doc": {
+    "about": "Copy this file to <data dir>/brand.json (the data dir is CAROUSEL_HOME, or .carousel in the folder you run from) and edit it. Every key is optional: anything left out keeps the neutral default shown here. Keys starting with an underscore are notes and are ignored.",
+    "name": "Your name or business name. Used as the name on the Quote template (04) and by caption drafting.",
+    "handle": "Your social handle, without a platform. Used by caption drafting, never printed on a slide by default.",
+    "byline": "One line shown beside the logo when the byline is switched on, and on the call to action slide (10). Markup: **bold** and *accent*. Example: **Riverbend Bakery** · Fresh every morning. Leave empty to show no byline.",
+    "colors": {
+      "bg": "Main background colour (hex).",
+      "bgDeep": "Second background tone, used at the bottom of the gradient and behind cards.",
+      "bgAlt": "Third background tone, used for lit panels and the call to action slide.",
+      "text": "Main text colour. It needs strong contrast with bg.",
+      "accent": "The brand colour: the big number, the step numeral, the keyword pill, the lit bar and the lit cell.",
+      "accentSoft": "A lighter tint of the accent: the italic accent word (*word*) in headlines.",
+      "highlight": "A second highlight, used for bold words (**word**) in headlines."
+    },
+    "fonts": {
+      "display": "Headline font. family is the font name; file is a path to a .woff2, .woff, .ttf or .otf file (relative to this file), or null to use a bundled or installed font. Bundled: Cormorant Garamond.",
+      "body": "Body and label font. Same shape as display. Bundled: Plus Jakarta Sans."
+    },
+    "logo": "Path (relative to this file) or https URL of a square logo, SVG or PNG. null shows no logo. Example: ../assets/placeholder-logo.svg",
+    "portrait": "Path or https URL of a portrait photo, used by layouts 02, 04 and 10 when a slide gives no photo. null means those layouts render without a photo. Example: ../assets/placeholder-portrait.svg",
+    "chrome": {
+      "showByline": "true puts the logo and byline at the top of every slide.",
+      "showCounter": "true puts a slide counter (03 / 08) at the top right.",
+      "showProgress": "true puts a progress bar at the bottom.",
+      "showCue": "true puts a Swipe cue at the bottom (Save this on the last slide).",
+      "showCorners": "true draws two thin corner marks in the accent colour on every slide."
+    },
+    "voiceProfilePath": "Path to a text or markdown file describing how you write. Caption drafting reads it when present. null to skip.",
+    "defaultHashtags": "List of hashtags added to drafted captions, for example [\"#bakery\", \"#sourdough\"]."
+  },
+  "name": "",
+  "handle": "",
+  "byline": "",
+  "colors": {
+    "bg": "#101314",
+    "bgDeep": "#161C1D",
+    "bgAlt": "#1B2B2C",
+    "text": "#F4EFE6",
+    "accent": "#2FB5A6",
+    "accentSoft": "#93DDD3",
+    "highlight": "#CDEFE9"
+  },
+  "fonts": {
+    "display": { "family": "Cormorant Garamond", "file": null },
+    "body": { "family": "Plus Jakarta Sans", "file": null }
+  },
+  "logo": null,
+  "portrait": null,
+  "chrome": {
+    "showByline": false,
+    "showCounter": false,
+    "showProgress": false,
+    "showCue": false,
+    "showCorners": false
+  },
+  "voiceProfilePath": null,
+  "defaultHashtags": []
+}

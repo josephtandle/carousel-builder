@@ -1,0 +1,16 @@
+require("./copy.test.js");
+require("./images.test.js");
+require("./seat.test.js");
+require("./store.test.js");
+require("./pdf.test.js");
+require("./publish.test.js");
+require("./publish-instagram.test.js");
+require("./publish-facebook.test.js");
+require("./publish-tiktok.test.js");
+require("./cli.test.js");
+require("./brand.test.js");
+require("./deck-schema.test.js");
+require("./render.test.js");
+require("./api.test.js");
+require("./ui-server.test.js");
+require("./meta-handoff.test.js");

@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Statement</title>
+<!-- Statement: one bold line is the whole slide. The hook or the punchline.
+     The accent is one *word*. Optional: eyebrow, sub, background { src, tint }. -->
+<script type="application/json" id="content">
+{
+  "slide": 1,
+  "total": 8,
+  "headline": "Fresh bread is *not* luck.\nIt is a plan."
+}
+</script>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .copy { gap: var(--s-4); }
+  .headline { font-size: var(--t-hero); }
+</style>
+</head>
+<body>
+<main class="slide" data-bg>
+  <section class="stage">
+    <div class="block copy" data-fit-box id="copy">
+      <p class="eyebrow" data-field="eyebrow"></p>
+      <h1 class="display headline" data-field="headline" data-fit data-fit-grow="1.45"></h1>
+      <p class="body sub" data-field="sub" data-fit></p>
+    </div>
+  </section>
+</main>
+<script src="../kit.js"></script>
+</body></html>

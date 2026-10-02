@@ -1,0 +1,5 @@
+/* Bundled fonts (latin subset, variable), stored locally so headless renders never fall back to system fonts.
+   Both families are licensed under the SIL Open Font License 1.1: see fonts/FONTS-NOTICE.txt. */
+@font-face{font-family:'Cormorant Garamond';font-style:normal;font-weight:300 700;font-display:block;src:url('fonts/CormorantGaramond.woff2') format('woff2');}
+@font-face{font-family:'Cormorant Garamond';font-style:italic;font-weight:300 700;font-display:block;src:url('fonts/CormorantGaramond-Italic.woff2') format('woff2');}
+@font-face{font-family:'Plus Jakarta Sans';font-style:normal;font-weight:200 800;font-display:block;src:url('fonts/PlusJakartaSans.woff2') format('woff2');}

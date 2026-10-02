@@ -1,0 +1,27 @@
+{
+  "id": "agent/carousel-builder/render-deck",
+  "layer": "agent",
+  "owner": "carousel-builder",
+  "title": "Render a deck to slides and a PDF",
+  "description": "Renders a saved draft (id), a deck JSON file (deckPath) or an inline deck to PNG slides and carousel.pdf, and runs the layout check. Optional size (portrait, square, story) and outDir (inside the data dir). Needs a local Chrome, Chromium or Edge. Never publishes.",
+  "tags": ["carousel", "render", "export", "png", "pdf"],
+  "phrases": [
+    "render this deck",
+    "export the carousel slides",
+    "render my carousel draft",
+    "make the pngs for this carousel",
+    "rebuild the carousel pdf"
+  ],
+  "actions": ["create"],
+  "safety": {
+    "destructive": false,
+    "rule": "Writes local files only. Never publishes.",
+    "notes": "Runs a headless browser on this machine. No network calls of its own."
+  },
+  "inputMode": "structured",
+  "requiredContext": [],
+  "outputMode": "text",
+  "fallbackPolicy": "deterministic_first",
+  "handler": "./render-deck.js",
+  "taskClass": "default_automation"
+}

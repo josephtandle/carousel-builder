@@ -1,0 +1,13 @@
+{
+  "title": "Background image example",
+  "size": "portrait",
+  "_note": "The six templates that take a background image. background.src is a path relative to this file (or an https URL); background.tint (0 to 1) is how strongly the brand background colour covers the image so the text stays readable. On the photo cover the image is the cover photo itself and the tint is not used: the cover has its own fade.",
+  "slides": [
+    { "layout": "02-face-claim-cover", "headline": "The oven is on by *five*.", "background": { "src": "../assets/placeholder-background.svg" } },
+    { "layout": "01-editorial-statement", "headline": "Slow mornings make *better* bread.", "background": { "src": "../assets/placeholder-background.svg", "tint": 0.6 } },
+    { "layout": "03-big-number-cover", "number": "5am", "unit": "is when the first trays go in.", "background": { "src": "../assets/placeholder-background.svg", "tint": 0.7 } },
+    { "layout": "06-numbered-step", "step": "1", "title": "Feed the starter the night before.", "body": "A lively starter does half the work for you.", "background": { "src": "../assets/placeholder-background.svg", "tint": 0.65 } },
+    { "layout": "04-tweet-card", "name": "A Saturday regular", "text": "Worth getting up for. Every single week.", "background": { "src": "../assets/placeholder-background.svg", "tint": 0.7 } },
+    { "layout": "11-recap-list", "title": "Recap", "items": [ "Feed the starter", "Shape it cold", "Bake it *hot*" ], "background": { "src": "../assets/placeholder-background.svg", "tint": 0.72 } }
+  ]
+}

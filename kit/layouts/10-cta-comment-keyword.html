@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Call to action</title>
+<!-- Call to action: the last slide. One action and one word (comment a keyword, then reply with the promised thing).
+     For a "Found this useful? Save it" ending, set lead, keyword and promise to match. The keyword is the accent.
+     photo falls back to the brand portrait, byline and logo to the brand byline and logo: this is the only slide
+     that shows them. With none of those set, the slide is the three lines alone. -->
+<script type="application/json" id="content">
+{
+  "slide": 8,
+  "total": 8,
+  "photo": "../../assets/placeholder-portrait.svg",
+  "lead": "Comment",
+  "keyword": "MENU",
+  "promise": "and we will send this week's bake list.",
+  "byline": "**Riverbend Bakery** \u00b7 Fresh every morning",
+  "logo": "../../assets/placeholder-logo.svg"
+}
+</script>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .cta { gap: var(--s-3); align-items: flex-start; }
+  .cta .avatar { width: calc(176px * var(--k)); height: calc(176px * var(--k)); margin-bottom: var(--s-2); }
+  .lead { font-size: var(--t-h2); line-height: 1; }
+  .kw { max-width: 100%; padding: .15em .34em .17em; border-radius: .2em; background: var(--accent); color: var(--bg);
+        font-size: var(--t-hero); font-weight: 800; letter-spacing: .03em; line-height: 1; white-space: nowrap; }
+  .promise { font-size: var(--t-h3); line-height: 1.1; max-width: var(--measure); }
+  .sig { flex: none; display: flex; align-items: center; gap: 16px; padding-top: var(--s-3); }
+  .sig:not(:has(> :not(.is-empty))) { display: none; }
+  .sig img { width: 44px; height: 44px; flex: none; object-fit: contain; }
+  .sig span { font-size: 24px; font-weight: 600; color: var(--text-70); white-space: nowrap; }
+  .sig strong { color: var(--text); font-weight: 800; }
+  .sig em { font-style: normal; color: inherit; }
+</style>
+</head>
+<body>
+<main class="slide is-deep">
+  <section class="stage">
+    <div class="block cta" data-fit-box id="cta">
+      <div class="avatar" data-src="photo" data-decor role="img" aria-label="Portrait"></div>
+      <p class="display lead no-accent" data-field="lead" data-fit></p>
+      <div class="kw" data-field="keyword" data-fit data-fit-line></div>
+      <p class="display promise no-accent" data-field="promise" data-fit></p>
+    </div>
+    <div class="sig"><img data-src="logo" alt=""><span data-field="byline"></span></div>
+  </section>
+</main>
+<script src="../kit.js"></script>
+</body></html>

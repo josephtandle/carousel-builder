@@ -1,0 +1,27 @@
+{
+  "id": "agent/carousel-builder/export-meta-carousel",
+  "layer": "agent",
+  "owner": "carousel-builder",
+  "title": "Export a Meta ads carousel handoff file",
+  "description": "Writes meta-carousel.json beside the slides of a rendered carousel (id): 2 to 10 cards with a headline each, the message, the call to action, and three placeholders to fill in (pageId, instagramUserId, link). Returns the file, the spec and any warnings, such as slides that are not square. Never uploads, never contacts Meta, never holds a token.",
+  "tags": ["carousel", "export", "meta", "ads", "facebook", "instagram", "handoff"],
+  "phrases": [
+    "export this carousel for meta ads",
+    "make the meta ads handoff for my carousel",
+    "turn the carousel into a meta carousel ad spec",
+    "prepare these slides as a facebook ad",
+    "write the ad handoff file for instagram ads"
+  ],
+  "actions": ["create"],
+  "safety": {
+    "destructive": false,
+    "rule": "Writes one local JSON file only. Never uploads and never contacts Meta.",
+    "notes": "The export must already be rendered. The file replaces an earlier meta-carousel.json in the same export folder. No network calls."
+  },
+  "inputMode": "structured",
+  "requiredContext": [],
+  "outputMode": "text",
+  "fallbackPolicy": "deterministic_first",
+  "handler": "./export-meta-carousel.js",
+  "taskClass": "default_automation"
+}

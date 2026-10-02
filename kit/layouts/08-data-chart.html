@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Bar chart</title>
+<!-- Bar chart: one comparison, two to four bars, one lit with "highlight": true. The lit bar is the accent.
+     The source goes in the caption. -->
+<script type="application/json" id="content">
+{
+  "slide": 3,
+  "total": 8,
+  "headline": "Where a week of orders comes from.",
+  "bars": [
+    { "label": "Walk-in", "value": 45, "display": "45%" },
+    { "label": "Ordered ahead", "value": 38, "display": "38%", "highlight": true },
+    { "label": "Wholesale", "value": 17, "display": "17%" }
+  ]
+}
+</script>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .wrap { gap: var(--s-5); }
+  .headline { font-size: var(--t-h2); }
+  .chart { display: flex; flex-direction: column; gap: var(--s-4); }
+  .bar .row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s-3); margin-bottom: var(--s-2); }
+  .bar .lbl { font-size: var(--t-body); font-weight: 600; color: var(--text-70); }
+  .bar .val { font-family: var(--font-display); font-size: var(--t-h3); line-height: 1; color: var(--text-70); white-space: nowrap; }
+  .track { height: calc(20px * var(--k)); border-radius: 999px; background: var(--panel); overflow: hidden; }
+  .fill { height: 100%; border-radius: 999px; background: rgba(var(--text-rgb), .3); }
+  .bar.is-on .lbl { color: var(--text); }
+  .bar.is-on .val { color: var(--accent); }
+  .bar.is-on .fill { background: var(--accent); }
+</style>
+</head>
+<body>
+<main class="slide">
+  <section class="stage">
+    <div class="block wrap" data-fit-box id="chart">
+      <h1 class="display headline no-accent" data-field="headline" data-fit></h1>
+      <div class="chart" data-list="bars">
+        <template>
+          <div class="bar" data-flag="highlight">
+            <div class="row"><span class="lbl" data-field="label" data-fit></span><span class="val" data-field="display" data-fit></span></div>
+            <div class="track"><div class="fill" data-width="_pct"></div></div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="../kit.js"></script>
+</body></html>

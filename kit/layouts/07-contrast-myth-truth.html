@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Old way, new way</title>
+<!-- Old way, new way: the tired belief sits muted above the line, the better one sits lit below it.
+     Relabel freely: Myth and Truth, Before and After, Old way and New way. One short line each.
+     The accent is one *word* in the new way. -->
+<script type="application/json" id="content">
+{
+  "slide": 4,
+  "total": 8,
+  "a_label": "Old way",
+  "a_text": "Guess the bake and hope.",
+  "b_label": "New way",
+  "b_text": "Bake what is *already* sold."
+}
+</script>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .half { min-height: 0; display: flex; flex-direction: column; gap: var(--s-2); }
+  .a { flex: 5; justify-content: flex-end; padding-bottom: var(--s-4); }
+  .b { flex: 7; justify-content: flex-start; padding-top: var(--s-4); }
+  .line { flex: none; height: 2px; background: var(--hair); }
+  .a .t { font-size: var(--t-h2); color: var(--text-55); text-decoration: line-through; text-decoration-thickness: 3px; text-decoration-color: rgba(var(--text-rgb), .38); }
+  .b .t { font-size: var(--t-h1); }
+  .b .label { color: var(--text); }
+</style>
+</head>
+<body>
+<main class="slide">
+  <section class="stage">
+    <div class="half a" data-fit-box id="a">
+      <span class="label" data-field="a_label"></span>
+      <p class="display t no-accent" data-field="a_text" data-fit></p>
+    </div>
+    <div class="line" data-decor aria-hidden="true"></div>
+    <div class="half b" data-fit-box id="b">
+      <span class="label" data-field="b_label"></span>
+      <p class="display t" data-field="b_text" data-fit></p>
+    </div>
+  </section>
+</main>
+<script src="../kit.js"></script>
+</body></html>

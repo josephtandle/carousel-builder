@@ -1,0 +1,27 @@
+{
+  "id": "agent/carousel-builder/status",
+  "layer": "agent",
+  "owner": "carousel-builder",
+  "title": "Check carousel builder setup",
+  "description": "Reports whether rendering, copy drafting, background sources and each publisher are ready, and names what is missing. Makes no network calls and never prints secret values.",
+  "tags": ["carousel", "status", "configuration", "doctor"],
+  "phrases": [
+    "is the carousel builder set up",
+    "check carousel builder status",
+    "can I publish carousels yet",
+    "which carousel publishers are connected",
+    "why can't I render a carousel"
+  ],
+  "actions": ["read"],
+  "safety": {
+    "destructive": false,
+    "rule": "Read only. Presence checks only, no values, no network.",
+    "notes": "Appends one line to logs/doctor.jsonl in the data dir."
+  },
+  "inputMode": "structured",
+  "requiredContext": [],
+  "outputMode": "text",
+  "fallbackPolicy": "worker_optional",
+  "handler": "./status.js",
+  "taskClass": "default_automation"
+}

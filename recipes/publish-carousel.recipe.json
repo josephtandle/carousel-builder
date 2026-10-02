@@ -1,0 +1,27 @@
+{
+  "id": "agent/carousel-builder/publish-carousel",
+  "layer": "agent",
+  "owner": "carousel-builder",
+  "title": "Publish a carousel with confirmation",
+  "description": "Publishes an exported carousel (id, or exportDir inside the data dir) to targets: instagram, linkedin, facebook, tiktok, or all for every wired one. Optional caption, captionFile, title, dryRun. Two steps: a dry run describes exactly what would be sent and returns metadata.confirmToken; posting needs confirm: PUBLISH plus that confirmToken. A dry run always wins.",
+  "tags": ["carousel", "publish", "instagram", "linkedin", "facebook", "tiktok", "confirmation-required"],
+  "phrases": [
+    "publish this carousel",
+    "post the carousel to instagram and linkedin",
+    "publish the approved carousel now",
+    "send this carousel to every connected platform",
+    "show me what publishing this carousel would send"
+  ],
+  "actions": ["publish"],
+  "safety": {
+    "destructive": true,
+    "rule": "Require confirm: PUBLISH for this exact request every time, together with the confirmToken from a dry run of the same request.",
+    "notes": "Publishing is irreversible and reaches a real audience. Without the confirmation the recipe only returns a dry run. Any dryRun value other than false, \"false\", 0 or an empty string is a dry run. Only exports inside the data dir with a passed layout check are accepted. Every attempt is written to the publish log."
+  },
+  "inputMode": "structured",
+  "requiredContext": [],
+  "outputMode": "text",
+  "fallbackPolicy": "deterministic_first",
+  "handler": "./publish-carousel.js",
+  "taskClass": "default_automation"
+}

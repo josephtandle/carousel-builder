@@ -1,0 +1,27 @@
+{
+  "id": "agent/carousel-builder/create-carousel",
+  "layer": "agent",
+  "owner": "carousel-builder",
+  "title": "Create a carousel from a brief",
+  "description": "Turns a brief or a pasted post into a deck, saves it as a draft and renders the slides and a PDF with the brand kit. Input: brief or sourceText, optional slides, size (portrait, square, story), render (default true). Never publishes.",
+  "tags": ["carousel", "create", "draft", "render", "content"],
+  "phrases": [
+    "make a carousel about this",
+    "create a carousel from this post",
+    "turn this into a carousel",
+    "draft an instagram carousel",
+    "build a linkedin carousel from this brief"
+  ],
+  "actions": ["create"],
+  "safety": {
+    "destructive": false,
+    "rule": "Creates local files only. Never publishes.",
+    "notes": "Sends the brief to a model provider only when a model key is set in the environment; with no key the built-in fallback drafts locally."
+  },
+  "inputMode": "structured",
+  "requiredContext": [],
+  "outputMode": "text",
+  "fallbackPolicy": "deterministic_first",
+  "handler": "./create-carousel.js",
+  "taskClass": "default_automation"
+}

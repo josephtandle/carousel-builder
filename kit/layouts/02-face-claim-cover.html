@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Photo cover</title>
+<!-- Photo cover: a face or a photo fills the slide, one short claim sits on a soft fade at the bottom.
+     photo falls back to the slide's background image, then to the brand portrait; with no image at all
+     the claim is centred on the plain ground. The accent is one *word*. Optional: eyebrow. -->
+<script type="application/json" id="content">
+{
+  "slide": 1,
+  "total": 8,
+  "photo": "../../assets/placeholder-portrait.svg",
+  "headline": "Sell out by *nine*, not by chance."
+}
+</script>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .photo { position: absolute; inset: 0; z-index: 0; background-size: cover; background-position: 50% 24%; }
+  /* the fade: the photo stays clear at the top and melts into the brand ground where the claim sits */
+  .scrim { position: absolute; inset: 0; z-index: 0;
+           background: linear-gradient(180deg, rgba(var(--bg-rgb), 0) 30%, rgba(var(--bg-rgb), .58) 52%, rgba(var(--bg-rgb), .93) 70%, var(--bg) 92%); }
+  .copy { position: absolute; left: 0; right: 0; bottom: 0; height: 44%; display: flex; flex-direction: column; justify-content: flex-end; gap: var(--s-3); }
+  .headline { font-size: var(--t-h1); text-shadow: 0 2px 30px rgba(var(--bg-rgb), .6); }
+  .slide.has-bg .eyebrow { color: rgba(var(--text-rgb), .92); }
+  /* no image: a plain text cover, centred like the statement */
+  .photo.is-empty ~ .scrim { display: none; }
+  .slide:has(.photo.is-empty) .copy { top: 0; height: auto; justify-content: center; }
+  .slide:has(.photo.is-empty) .headline { text-shadow: none; }
+</style>
+</head>
+<body>
+<main class="slide" data-bg="photo">
+  <div class="photo" data-src="photo" data-decor role="img" aria-label="Photo"></div>
+  <div class="scrim" data-decor aria-hidden="true"></div>
+  <section class="stage">
+    <div class="copy" data-fit-box id="claim">
+      <p class="eyebrow" data-field="eyebrow"></p>
+      <h1 class="display headline" data-field="headline" data-fit data-fit-grow="1.3"></h1>
+    </div>
+  </section>
+</main>
+<script src="../kit.js"></script>
+</body></html>

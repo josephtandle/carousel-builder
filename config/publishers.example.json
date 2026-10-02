@@ -1,0 +1,39 @@
+{
+  "mediaHost": {
+    "kind": "none",
+    "urlPrefix": ""
+  },
+  "targets": {
+    "instagram": {
+      "enabled": true,
+      "transport": "auto",
+      "format": "images",
+      "maxSlides": 10,
+      "needsPublicUrls": true,
+      "imageFormat": "jpeg"
+    },
+    "linkedin": {
+      "enabled": true,
+      "transport": "rest",
+      "format": "pdf",
+      "maxSlides": 300,
+      "needsPublicUrls": false
+    },
+    "facebook": {
+      "enabled": true,
+      "transport": "graph",
+      "format": "images",
+      "maxSlides": 10,
+      "needsPublicUrls": false
+    },
+    "tiktok": {
+      "enabled": true,
+      "transport": "content-posting",
+      "format": "images",
+      "maxSlides": 35,
+      "needsPublicUrls": true,
+      "imageFormat": "jpeg",
+      "privacyLevel": "SELF_ONLY"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "id": "agent/carousel-builder/list-carousels",
+  "layer": "agent",
+  "owner": "carousel-builder",
+  "title": "List saved carousels",
+  "description": "Lists saved drafts and exports, newest first, with slide counts and where each one was published, plus the most recent publish attempts from the log. Optional limit.",
+  "tags": ["carousel", "list", "drafts", "history"],
+  "phrases": [
+    "list my carousels",
+    "show my carousel drafts",
+    "which carousels have I published",
+    "what carousels are saved",
+    "show the carousel publish history"
+  ],
+  "actions": ["read"],
+  "safety": {
+    "destructive": false,
+    "rule": "Read only.",
+    "notes": "Reads the local data dir. No network."
+  },
+  "inputMode": "structured",
+  "requiredContext": [],
+  "outputMode": "text",
+  "fallbackPolicy": "worker_optional",
+  "handler": "./list-carousels.js",
+  "taskClass": "default_automation"
+}

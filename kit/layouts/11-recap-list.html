@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>List</title>
+<!-- List: the recap, or up to six short points. The screenshot-and-save slide.
+     The accent is one *word* in one row. Optional: title, background { src, tint }. -->
+<script type="application/json" id="content">
+{
+  "slide": 7,
+  "total": 8,
+  "title": "Recap",
+  "items": [
+    "Post the menu Thursday",
+    "Close orders Friday noon",
+    "Bake to the *list*",
+    "Keep a small buffer"
+  ]
+}
+</script>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .list { gap: var(--s-4); }
+  .title { font-size: var(--t-h1); }
+  ol { list-style: none; display: flex; flex-direction: column; }
+  li { display: flex; align-items: baseline; gap: var(--s-3); padding: calc(26px * var(--k)) 0; border-top: 2px solid var(--hair); }
+  li:last-child { border-bottom: 2px solid var(--hair); }
+  .slide.has-bg li, .slide.has-bg li:last-child { border-color: rgba(var(--text-rgb), .32); }
+  li .i { flex: none; width: 2.1em; font-size: var(--t-label); font-weight: 700; letter-spacing: .12em; color: var(--text-55); }
+  .slide.has-bg li .i { color: rgba(var(--text-rgb), .92); }
+  li .x { font-size: var(--t-h3); line-height: 1.1; }
+</style>
+</head>
+<body>
+<main class="slide" data-bg>
+  <section class="stage">
+    <div class="block list" data-fit-box id="recap">
+      <h1 class="display title no-accent" data-field="title" data-fit></h1>
+      <ol data-list="items"><template><li><span class="i" data-field="index"></span><span class="display x" data-field="text" data-fit></span></li></template></ol>
+    </div>
+  </section>
+</main>
+<script src="../kit.js"></script>
+</body></html>

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Quote</title>
+<!-- Quote: a customer's words, or one opinion in your own voice. One or two sentences.
+     The quote mark is the accent. avatar falls back to the brand portrait and name to the brand name;
+     with neither, the quote stands alone. Optional: background { src, tint }. -->
+<script type="application/json" id="content">
+{
+  "slide": 5,
+  "total": 8,
+  "avatar": "../../assets/placeholder-portrait.svg",
+  "name": "A Saturday regular",
+  "text": "I stopped setting an alarm. My loaf is waiting with my name on it."
+}
+</script>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .quote { gap: var(--s-4); }
+  .mark { font-size: calc(var(--t-numeral) * 1.3); line-height: 1; height: .36em; }
+  .text { font-size: var(--t-h2); line-height: 1.1; }
+  .who { display: flex; align-items: center; gap: var(--s-2); flex: none; }
+  .who:not(:has(> :not(.is-empty))) { display: none; }
+  .who .avatar { width: calc(84px * var(--k)); height: calc(84px * var(--k)); }
+  .who .n { color: var(--text-70); }
+</style>
+</head>
+<body>
+<main class="slide" data-bg>
+  <section class="stage">
+    <div class="block quote" data-fit-box id="card">
+      <div class="figure mark" data-decor aria-hidden="true">&ldquo;</div>
+      <p class="display text no-accent" data-field="text" data-fit></p>
+      <div class="who">
+        <div class="avatar" data-src="avatar" data-decor role="img" aria-label="Portrait"></div>
+        <p class="label n" data-field="name"></p>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="../kit.js"></script>
+</body></html>

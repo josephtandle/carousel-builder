@@ -1,0 +1,27 @@
+{
+  "id": "agent/carousel-builder/find-backgrounds",
+  "layer": "agent",
+  "owner": "carousel-builder",
+  "title": "Find or generate slide backgrounds",
+  "description": "Finds background images through the provider chain in providers.json (your own library first, then free stock, then generators) and reports which providers were tried. Input: query, optional count, orientation, provider; or generate: true with a prompt to create one image.",
+  "tags": ["carousel", "images", "backgrounds", "stock", "generate"],
+  "phrases": [
+    "find a background for this slide",
+    "search background images for my carousel",
+    "generate a background image",
+    "look for stock photos for the carousel",
+    "which image providers are available"
+  ],
+  "actions": ["read", "create"],
+  "safety": {
+    "destructive": false,
+    "rule": "Never publishes. Generators that bill per image only run when their key is set and the chain reaches them.",
+    "notes": "Calls only the providers you enabled and configured. Generated images are saved to the library folder in the data dir."
+  },
+  "inputMode": "structured",
+  "requiredContext": [],
+  "outputMode": "text",
+  "fallbackPolicy": "deterministic_first",
+  "handler": "./find-backgrounds.js",
+  "taskClass": "default_automation"
+}

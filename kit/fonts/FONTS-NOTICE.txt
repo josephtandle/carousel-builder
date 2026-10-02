@@ -1,0 +1,14 @@
+Bundled fonts
+
+CormorantGaramond.woff2, CormorantGaramond-Italic.woff2
+  Cormorant Garamond, Copyright the Cormorant Project Authors
+  (https://github.com/CatharsisFonts/Cormorant)
+
+PlusJakartaSans.woff2
+  Plus Jakarta Sans, Copyright the Plus Jakarta Sans Project Authors
+  (https://github.com/tokotype/PlusJakartaSans)
+
+Both families are licensed under the SIL Open Font License, Version 1.1.
+The full licence text for each family ships beside this file:
+OFL-CormorantGaramond.txt and OFL-PlusJakartaSans.txt (also at https://openfontlicense.org)
+The files here are the latin-subset variable builds, unmodified apart from subsetting.

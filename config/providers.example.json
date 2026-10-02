@@ -1,0 +1,13 @@
+{
+  "mode": "first-available",
+  "chain": [
+    { "id": "library", "enabled": true, "env": [], "costHint": "Free. Your own images in the library folder of the data directory." },
+    { "id": "pexels", "enabled": true, "env": ["PEXELS_API_KEY"], "costHint": "Free stock photos with a free API key. Pexels License." },
+    { "id": "unsplash", "enabled": true, "env": ["UNSPLASH_ACCESS_KEY"], "costHint": "Free stock photos with a free access key. Unsplash License." },
+    { "id": "codex-imagegen", "enabled": true, "env": [], "costHint": "Included with a signed-in Codex seat. Experimental: not every seat can write image files, so it may fall through to the next provider." },
+    { "id": "openai-image", "enabled": true, "env": ["OPENAI_API_KEY"], "costHint": "Metered. Billed per image to your OpenAI account." },
+    { "id": "huggingface", "enabled": true, "env": ["HF_TOKEN"], "costHint": "Free monthly credits on a Hugging Face account, then metered. FLUX.1 schnell." },
+    { "id": "whisk", "enabled": true, "env": ["ALLSORTED_ROOT"], "costHint": "Metered through the image provider configured in the sibling whisk module." },
+    { "id": "open-generative-ai", "enabled": true, "env": ["ALLSORTED_ROOT"], "costHint": "Metered through the provider key you connected in the sibling open-generative-ai module (fal.ai by default)." }
+  ]
+}

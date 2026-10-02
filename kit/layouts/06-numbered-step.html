@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Step</title>
+<!-- Step: one step or one point per slide. A numeral, a short title, one supporting line.
+     With a numeral, the numeral is the accent and the title stays plain. Leave step out for a plain point:
+     then one *word* of the title takes the accent.
+     Optional: step, body, prompt (a copy-and-paste box, only when the wording IS the value), background { src, tint }. -->
+<script type="application/json" id="content">
+{
+  "slide": 3,
+  "total": 8,
+  "step": "1",
+  "title": "Post the menu on Thursday.",
+  "body": "One photo, one link, one clear cut-off time."
+}
+</script>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .step { gap: var(--s-3); }
+  .num { font-size: var(--t-numeral); margin-bottom: calc(-1 * var(--s-2)); }
+  .title { font-size: var(--t-h1); }
+  .step:has(.num:not(.is-empty)) .title em { color: inherit; }
+  .prompt { background: var(--panel); border-radius: 20px; padding: var(--s-3); display: flex; flex-direction: column; gap: var(--s-1); margin-top: var(--s-1); }
+  .slide.has-bg .prompt { background: rgba(var(--bg-rgb), .6); }
+  .prompt .pt { font-size: calc(var(--t-body) * .88); line-height: 1.4; font-weight: 500; color: var(--text); }
+</style>
+</head>
+<body>
+<main class="slide" data-bg>
+  <section class="stage">
+    <div class="block step" data-fit-box id="step">
+      <div class="figure num" data-field="step" data-fit data-fit-line></div>
+      <h1 class="display title" data-field="title" data-fit></h1>
+      <p class="body" data-field="body" data-fit></p>
+      <div class="prompt" data-optional>
+        <span class="label pl" data-field="prompt_label" data-optional></span>
+        <p class="pt" data-field="prompt" data-fit></p>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="../kit.js"></script>
+</body></html>

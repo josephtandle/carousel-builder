@@ -1,0 +1,197 @@
+/*
+ * Carousel kit tokens.
+ * Every colour and font below is a default. The renderer injects a brand block (lib/brand.js, brandCss)
+ * after this file, so a brand.json swaps the whole look without touching a layout.
+ * Canvas sizes: portrait 1080x1350, square 1080x1080, story 1080x1920 (html[data-size]).
+ * Every layout imports this file plus fonts.css.
+ */
+:root {
+  /* brand colours: keep in step with DEFAULT_BRAND in lib/brand.js */
+  --bg: #101314;
+  --bg-rgb: 16, 19, 20;
+  --bg-deep: #161C1D;
+  --bg-deep-rgb: 22, 28, 29;
+  --bg-alt: #1B2B2C;
+  --bg-alt-rgb: 27, 43, 44;
+  --text: #F4EFE6;
+  --text-rgb: 244, 239, 230;
+  --accent: #2FB5A6;
+  --accent-rgb: 47, 181, 166;
+  --accent-mid: #4DC1B4;
+  --accent-mid-rgb: 77, 193, 180;
+  --accent-soft: #93DDD3;
+  --accent-soft-rgb: 147, 221, 211;
+  --accent-deep: #26847A;
+  --highlight: #CDEFE9;
+  --highlight-rgb: 205, 239, 233;
+  --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+  --font-body: "Plus Jakarta Sans", "Helvetica Neue", Arial, sans-serif;
+
+  /* derived from the brand colours */
+  --text-70: rgba(var(--text-rgb), .72);
+  --text-55: rgba(var(--text-rgb), .58);
+  --text-12: rgba(var(--text-rgb), .12);
+  --ink: var(--bg);
+
+  /* canvas: portrait by default */
+  --w: 1080px;
+  --h: 1350px;
+  --safe-x: 90px;
+  --safe-y: 120px;
+  --k: 1;               /* type and spacing scale for the canvas size */
+  --header-h: 56px;
+  --footer-h: 44px;
+  /* content stage: generous margins by default; grows inward only when optional chrome is switched on */
+  --stage-top: calc(var(--safe-y) + 50px);
+  --stage-bottom: calc(var(--safe-y) + 50px);
+  --margin-x: calc(var(--safe-x) + 10px);   /* the one left and right text margin, a little inside the safe area */
+
+  /* ---------- ONE TYPE SCALE (every template picks from these, nothing else) ---------- */
+  --t-mega: calc(430px * var(--k));     /* the big number */
+  --t-numeral: calc(300px * var(--k));  /* the step numeral, the quote mark */
+  --t-hero: calc(156px * var(--k));     /* the statement */
+  --t-h1: calc(124px * var(--k));       /* cover claim, step title, the new way, list title */
+  --t-h2: calc(96px * var(--k));        /* chart and grid headlines, the unit line, the old way, the quote */
+  --t-h3: calc(68px * var(--k));        /* list rows, grid cells, bar values, the promise */
+  --t-body: calc(42px * var(--k));      /* supporting line */
+  --t-label: max(26px, calc(28px * var(--k)));  /* small caps labels: never below 26px */
+
+  /* ---------- ONE SPACING SCALE ---------- */
+  --s-1: calc(12px * var(--k));
+  --s-2: calc(20px * var(--k));
+  --s-3: calc(32px * var(--k));
+  --s-4: calc(48px * var(--k));
+  --s-5: calc(72px * var(--k));
+  --s-6: calc(104px * var(--k));
+
+  --measure: 840px;     /* the longest a supporting line may run */
+  --hair: rgba(var(--text-rgb), .16);   /* hairlines */
+  --panel: rgba(var(--text-rgb), .06);  /* quiet panels: unlit cells, bar tracks */
+}
+html[data-size="square"] { --h: 1080px; --safe-y: 96px; --k: .82; }
+html[data-size="story"] { --h: 1920px; --safe-y: 250px; --k: 1.12; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { width: var(--w); height: var(--h); overflow: hidden; background: var(--bg); }
+body {
+  font-family: var(--font-body);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: geometricPrecision;
+}
+
+/* Text never breaks mid-word: if a word is too wide, fit-text shrinks it instead. */
+.slide, .slide * { overflow-wrap: normal; word-break: normal; hyphens: manual; }
+
+/* The ground: the brand background with one soft wash of the accent from the top right. Nothing else decorates a slide. */
+.slide {
+  position: relative;
+  width: var(--w);
+  height: var(--h);
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse 90% 60% at 100% 0%, rgba(var(--accent-rgb), .13), transparent 62%),
+    linear-gradient(180deg, var(--bg) 0%, var(--bg) 60%, var(--bg-deep) 100%);
+}
+.slide.is-deep { background:
+    radial-gradient(ellipse 90% 60% at 0% 100%, rgba(var(--accent-rgb), .16), transparent 62%),
+    linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-alt) 100%); }
+
+/* Optional background image (content.background = { src, tint }) on layouts marked data-bg.
+   The image fills the canvas. A layer of the brand background colour sits on top (opacity = tint), and a second,
+   fixed wash darkens the middle band where the copy sits, so text stays readable on a busy photo. */
+.bg-photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; pointer-events: none; }
+.bg-tint { position: absolute; inset: 0; z-index: 0; background: var(--bg); pointer-events: none; }
+.bg-wash { position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(var(--bg-rgb), .0) 0%, rgba(var(--bg-rgb), .34) 30%, rgba(var(--bg-rgb), .34) 70%, rgba(var(--bg-rgb), .0) 100%); }
+
+/* Film grain, decorative */
+.grain {
+  position: absolute; inset: 0; pointer-events: none; z-index: 1; opacity: .05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+}
+
+/* ---------- OPTIONAL CHROME ----------
+ * All off by default. Switch on per brand (brand.json "chrome") or per slide in the deck JSON:
+ * show_corners, show_byline, show_counter, show_progress, show_cue.
+ */
+.corner { position: absolute; width: 56px; height: 56px; z-index: 6; pointer-events: none; }
+.corner.tl { top: 48px; left: 48px; border-top: 5px solid var(--accent); border-left: 5px solid var(--accent); }
+.corner.br { bottom: 48px; right: 48px; border-bottom: 5px solid var(--accent); border-right: 5px solid var(--accent); }
+.slide.has-top { --stage-top: calc(var(--safe-y) + 110px); }
+.slide.has-bottom { --stage-bottom: calc(var(--safe-y) + 110px); }
+
+/* Optional byline header: brand logo + brand byline + slide counter */
+.sig-top {
+  position: absolute; z-index: 6;
+  top: var(--safe-y); left: var(--safe-x); right: var(--safe-x); height: var(--header-h);
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+}
+.sig-top .who { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.sig-top .who img { width: 48px; height: 48px; flex: none; object-fit: contain; }
+.sig-top .byline { font-size: 24px; font-weight: 600; letter-spacing: .02em; color: var(--text-70); white-space: nowrap; }
+.sig-top .byline strong { color: var(--text); font-weight: 700; }
+.sig-top .byline em { font-style: normal; color: var(--accent-soft); }
+.sig-top .count { font-size: 22px; font-weight: 700; letter-spacing: .16em; color: var(--accent-soft); white-space: nowrap; }
+
+/* Optional progress bar + swipe cue */
+.sig-bottom {
+  position: absolute; z-index: 6;
+  bottom: var(--safe-y); left: var(--safe-x); right: var(--safe-x); height: var(--footer-h);
+  display: flex; align-items: center; justify-content: flex-end; gap: 28px;
+}
+.progress { flex: 1; height: 6px; border-radius: 3px; background: var(--text-12); position: relative; overflow: hidden; }
+.progress i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 3px; background: linear-gradient(90deg, var(--accent), var(--accent-soft)); }
+.cue { font-size: 22px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase; color: var(--accent-soft); white-space: nowrap; display: flex; align-items: center; gap: 14px; }
+.cue .arrow { display: inline-block; margin-right: 8px; width: 46px; height: 2px; background: var(--accent); position: relative; }
+.cue .arrow::after { content: ""; position: absolute; right: 0; top: -6px; width: 12px; height: 12px; border-top: 2px solid var(--accent); border-right: 2px solid var(--accent); transform: rotate(45deg); }
+
+/* ---------- CONTENT STAGE ----------
+ * Every template puts its copy in .stage: the same left edge, the same right edge, the same top and bottom
+ * limits. The default is one block, centred on the height (.block). Covers anchor to the bottom instead.
+ */
+.stage {
+  position: absolute; z-index: 3;
+  top: var(--stage-top); bottom: var(--stage-bottom);
+  left: var(--margin-x); right: var(--margin-x);
+  display: flex; flex-direction: column;
+}
+.block { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center;
+  /* the block reaches out to the safe edge so a big figure can hang into it (see .figure) */
+  margin-left: calc(var(--safe-x) - var(--margin-x)); padding-left: calc(var(--margin-x) - var(--safe-x)); }
+/* fit boxes must have a definite size: flex children use min-height:0. They do not clip: overflow is
+   handled by fit-text and caught by the QA gate, never hidden. */
+[data-fit-box] { min-height: 0; }
+
+/* ---------- TYPE ---------- */
+.label, .eyebrow { font-size: var(--t-label); font-weight: 700; letter-spacing: .2em; text-transform: uppercase; color: var(--text-55); line-height: 1.2; }
+.display { font-family: var(--font-display); font-weight: 400; line-height: 1.06; letter-spacing: -.012em; color: var(--text); }
+/* the accent: one italic word in the soft accent colour. A template whose accent is an element (a number, a pill,
+   a lit bar) switches the colour off with .no-accent so each slide carries exactly one accent. */
+.display em, .accent em { font-style: italic; color: var(--accent-soft); margin-right: .04em; }   /* the slant leans into the next word: give it room */
+.no-accent em, .no-accent.display em { color: inherit; }
+.display strong { font-weight: 600; color: var(--highlight); }
+/* inline accents use a different font file; keep them from growing the line box */
+.display em, .display strong, .body em, .body strong { line-height: 0; }
+.body { font-size: var(--t-body); line-height: 1.4; color: var(--text-70); font-weight: 500; max-width: var(--measure); }
+.body strong { color: var(--text); font-weight: 700; }
+.body em { font-style: normal; color: inherit; font-weight: 700; }
+/* big figures sit a hair left of the margin: pull them back so their ink lines up with the text below */
+/* line-height stays at 1.1 so a brand's own display font (taller than the bundled one) is never cut or measured as overflow */
+.figure { font-family: var(--font-display); font-weight: 500; line-height: 1.1; letter-spacing: -.03em; white-space: nowrap; color: var(--accent); margin-left: max(-10px, -.035em); }
+.rule { width: 96px; height: 4px; border-radius: 2px; background: var(--accent); flex: none; }
+/* a photo behind the copy: lift the supporting copy to full strength and seat the type on a soft shadow */
+.slide.has-bg .body, .slide.has-bg .label, .slide.has-bg .eyebrow { color: rgba(var(--text-rgb), .92); }
+.slide.has-bg .display, .slide.has-bg .body { text-shadow: 0 2px 28px rgba(var(--bg-rgb), .55); }
+
+/* balanced headlines, no orphans in body copy, lining figures for numbers */
+.display, h1 { text-wrap: balance; }
+.body, p { text-wrap: balance; }
+.slide { font-variant-numeric: lining-nums; }
+.nw { white-space: nowrap; }
+.para { display: block; height: .42em; }
+
+/* round photo (the quote and the call to action use the same one) */
+.avatar { flex: none; border-radius: 50%; background-size: cover; background-position: 50% 28%; }
+
+[hidden], .is-empty { display: none !important; }

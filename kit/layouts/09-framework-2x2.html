@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Two by two</title>
+<!-- Two by two: four options sorted on two questions, the answer lit with "highlight": true.
+     Cell titles only (two to four words). The lit cell is the accent. Built to be saved.
+     Optional: col_a, col_b, row_a, row_b (the axis labels). -->
+<script type="application/json" id="content">
+{
+  "slide": 6,
+  "total": 8,
+  "headline": "What to bake first.",
+  "col_a": "Sells fast",
+  "col_b": "Sells slow",
+  "row_a": "Low cost",
+  "row_b": "High cost",
+  "quads": [
+    { "title": "Bake it daily", "highlight": true },
+    { "title": "Bake to order" },
+    { "title": "Weekend special" },
+    { "title": "Drop it" }
+  ]
+}
+</script>
+<link rel="stylesheet" href="../fonts.css">
+<link rel="stylesheet" href="../tokens.css">
+<style>
+  .stage { justify-content: center; gap: var(--s-4); }
+  .hd { flex: none; height: calc(210px * var(--k)); display: flex; flex-direction: column; justify-content: flex-end; }
+  .headline { font-size: var(--t-h2); }
+  .matrix { flex: 1 1 auto; min-height: 0; max-height: calc(700px * var(--k)); display: grid; grid-template-columns: calc(var(--t-label) * 2.5) 1fr 1fr; grid-template-rows: auto 1fr 1fr; gap: var(--s-2); }
+  /* no row labels: the label column closes up and the grid starts on the text margin */
+  .matrix:not(:has(.rw:not(.is-empty))) { grid-template-columns: 0 1fr 1fr; margin-left: calc(-1 * var(--s-2)); }
+  .ch { align-self: end; text-align: center; letter-spacing: .14em; min-width: 0; }
+  /* a row label reads bottom to top beside its row: a box as wide as the row is tall, turned a quarter. It may
+     take two lines, and shrinks (to 18px at the least) before it would take a third. */
+  .rw { container-type: size; position: relative; min-width: 0; min-height: 0; }
+  .rh { position: absolute; left: 50%; top: 50%; width: 100cqh; height: 100cqw; transform: translate(-50%, -50%) rotate(-90deg);
+        display: flex; align-items: safe center; justify-content: center; text-align: center; letter-spacing: .1em; }
+  .quads { display: contents; }
+  .q { min-height: 0; min-width: 0; border-radius: calc(28px * var(--k)); padding: var(--s-3); background: var(--panel);
+       display: flex; align-items: center; justify-content: center; text-align: center; }
+  .q .qt { font-size: var(--t-h3); line-height: 1.06; color: var(--text-70); }
+  .q.is-on { background: var(--accent); }
+  .q.is-on .qt { color: var(--bg); }
+  .ca { grid-column: 2; grid-row: 1; } .cb { grid-column: 3; grid-row: 1; }
+  .ra { grid-column: 1; grid-row: 2; } .rb { grid-column: 1; grid-row: 3; }
+  .q:nth-of-type(1) { grid-column: 2; grid-row: 2; } .q:nth-of-type(2) { grid-column: 3; grid-row: 2; }
+  .q:nth-of-type(3) { grid-column: 2; grid-row: 3; } .q:nth-of-type(4) { grid-column: 3; grid-row: 3; }
+</style>
+</head>
+<body>
+<main class="slide">
+  <section class="stage">
+    <div class="hd" data-fit-box id="head">
+      <h1 class="display headline no-accent" data-field="headline" data-fit></h1>
+    </div>
+    <div class="matrix">
+      <span class="label ch ca" data-field="col_a"></span><span class="label ch cb" data-field="col_b"></span>
+      <div class="rw ra" data-optional><span class="label rh" data-field="row_a" data-fit-box data-fit data-fit-floor="18"></span></div>
+      <div class="rw rb" data-optional><span class="label rh" data-field="row_b" data-fit-box data-fit data-fit-floor="18"></span></div>
+      <div class="quads" data-list="quads">
+        <template>
+          <div class="q" data-flag="highlight" data-fit-box>
+            <p class="display qt no-accent" data-field="title" data-fit></p>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+</main>
+<script src="../kit.js"></script>
+</body></html>

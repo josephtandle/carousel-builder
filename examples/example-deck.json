@@ -1,0 +1,17 @@
+{
+  "title": "Sell out by nine",
+  "size": "portrait",
+  "_note": "Example 8-slide carousel for a fictional bakery: a photo cover, one number, two steps, a contrast, a quote, the recap and the call to action. Each slide picks a template (layout) and fills its fields; slide and total are filled in automatically. Image paths are relative to this file. Sources and hashtags go in the caption, never on the slides.",
+  "slides": [
+    { "layout": "02-face-claim-cover", "photo": "../assets/placeholder-background.svg", "headline": "Sell out by *nine*, not by chance." },
+    { "layout": "03-big-number-cover", "number": "38%", "unit": "of our weekend loaves are ordered ahead." },
+    { "layout": "06-numbered-step", "step": "1", "title": "Post the menu on Thursday.", "body": "One photo, one link, one clear cut-off time." },
+    { "layout": "06-numbered-step", "step": "2", "title": "Bake to the list, plus a small buffer.", "body": "Less waste, and regulars always get their loaf." },
+    { "layout": "07-contrast-myth-truth", "a_label": "Old way", "a_text": "Guess the bake and hope.", "b_label": "New way", "b_text": "Bake what is *already* sold." },
+    { "layout": "04-tweet-card", "avatar": "../assets/placeholder-portrait.svg", "name": "A Saturday regular", "text": "I stopped setting an alarm. My loaf is waiting with my name on it." },
+    { "layout": "11-recap-list", "title": "Recap", "items": [ "Post the menu Thursday", "Close orders Friday noon", "Bake to the *list*", "Keep a small buffer" ] },
+    { "layout": "10-cta-comment-keyword", "photo": "../assets/placeholder-portrait.svg", "lead": "Comment", "keyword": "MENU", "promise": "and we will send this week's bake list.", "byline": "**Riverbend Bakery** · Fresh every morning", "logo": "../assets/placeholder-logo.svg" }
+  ],
+  "caption": "Selling out is a plan, not a lucky morning. Here is the weekly rhythm we use at our (fictional) bakery: menu on Thursday, orders closed Friday noon, bake to the list. Save it for your next slow week.",
+  "hashtags": ["#bakery", "#smallbusiness", "#sourdough"]
+}
