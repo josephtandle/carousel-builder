@@ -1,6 +1,6 @@
 {
   "name": "carousel-builder",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Build, export and publish social carousels from a brief: brand kit, layout-checked rendering, background image chain and confirmation-gated publishing. Zero npm dependencies.",
   "license": "MIT",
   "bin": {

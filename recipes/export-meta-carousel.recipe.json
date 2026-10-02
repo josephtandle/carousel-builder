@@ -3,7 +3,7 @@
   "layer": "agent",
   "owner": "carousel-builder",
   "title": "Export a Meta ads carousel handoff file",
-  "description": "Writes meta-carousel.json beside the slides of a rendered carousel (id): 2 to 10 cards with a headline each, the message, the call to action, and three placeholders to fill in (pageId, instagramUserId, link). Returns the file, the spec and any warnings, such as slides that are not square. Never uploads, never contacts Meta, never holds a token.",
+  "description": "Writes meta-carousel.json beside the slides of a rendered carousel (id): 2 to 10 cards with a headline each, the message, the call to action, and three placeholders to fill in (pageId, instagramUserId, link). Pass callToAction to choose the call to action (LEARN_MORE, SHOP_NOW, SIGN_UP, BOOK_NOW, GET_OFFER, CONTACT_US, SUBSCRIBE or DOWNLOAD); without it LEARN_MORE is used and a warning says so. Returns the file, the spec and any warnings, such as slides that are not square. Never uploads, never contacts Meta, never holds a token.",
   "tags": ["carousel", "export", "meta", "ads", "facebook", "instagram", "handoff"],
   "phrases": [
     "export this carousel for meta ads",

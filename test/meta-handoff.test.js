@@ -7,7 +7,7 @@ const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { buildMetaCarouselSpec, writeMetaCarouselSpec, SPEC_NAME } = require("../lib/meta-handoff.js");
+const { buildMetaCarouselSpec, writeMetaCarouselSpec, SPEC_NAME, META_CALL_TO_ACTIONS } = require("../lib/meta-handoff.js");
 const { createApi } = require("../lib/api.js");
 const store = require("../lib/store.js");
 const { tmpDir, writeExport, mockFetch } = require("./publish-helpers.js");
@@ -22,6 +22,9 @@ const SLIDES = [
 ];
 const CAPTION = "Selling out is a plan, not a lucky morning. Here is the weekly rhythm we use at our (fictional) bakery: menu on Thursday, orders closed Friday noon, bake to the list.";
 
+const NO_CTA_WARNING = "No call to action was given, so LEARN_MORE is used. Pass callToAction to choose another.";
+const CALLS_TO_ACTION = ["LEARN_MORE", "SHOP_NOW", "SIGN_UP", "BOOK_NOW", "GET_OFFER", "CONTACT_US", "SUBSCRIBE", "DOWNLOAD"];
+
 function exportOf(count, size) {
   const dir = path.join(tmpDir("carousel-meta-"), "exports", ID);
   const files = writeExport(dir, count, size ? { size } : undefined);
@@ -30,7 +33,7 @@ function exportOf(count, size) {
 
 test("the spec has exactly the handoff shape, with placeholders where only the advertiser knows the value", () => {
   const { dir, files } = exportOf(5, { width: 40, height: 40 });
-  const { spec, warnings } = buildMetaCarouselSpec({ exportDir: dir, files, deckTitle: "Sell out by nine", caption: "Selling out is a plan.", slides: SLIDES });
+  const { spec, warnings } = buildMetaCarouselSpec({ exportDir: dir, files, deckTitle: "Sell out by nine", caption: "Selling out is a plan.", slides: SLIDES, callToAction: "LEARN_MORE" });
   assert.deepEqual(Object.keys(spec), ["name", "pageId", "instagramUserId", "message", "link", "callToAction", "optimizeOrder", "endCard", "cards"]);
   assert.deepEqual(spec, {
     name: "Sell out by nine",
@@ -67,13 +70,13 @@ test("card count: fewer than 2 is an error, more than 10 takes the first 10 with
   assert.equal(buildMetaCarouselSpec({ exportDir: two.dir, files: two.files, deckTitle: "T", caption: "C", slides: SLIDES }).spec.cards.length, 2);
   for (const [count, optimise] of [[5, false], [6, true], [10, true]]) {
     const made = exportOf(count, { width: 40, height: 40 });
-    const { spec, warnings } = buildMetaCarouselSpec({ exportDir: made.dir, files: made.files, deckTitle: "T", caption: "C", slides: Array.from({ length: count }, () => SLIDES[0]) });
+    const { spec, warnings } = buildMetaCarouselSpec({ exportDir: made.dir, files: made.files, deckTitle: "T", caption: "C", slides: Array.from({ length: count }, () => SLIDES[0]), callToAction: "LEARN_MORE" });
     assert.equal(spec.cards.length, count);
     assert.equal(spec.optimizeOrder, optimise, `${count} cards`);
     assert.deepEqual(warnings, []);
   }
   const many = exportOf(12, { width: 40, height: 40 });
-  const { spec, warnings } = buildMetaCarouselSpec({ exportDir: many.dir, files: many.files, deckTitle: "T", caption: "C", slides: Array.from({ length: 12 }, () => SLIDES[0]) });
+  const { spec, warnings } = buildMetaCarouselSpec({ exportDir: many.dir, files: many.files, deckTitle: "T", caption: "C", slides: Array.from({ length: 12 }, () => SLIDES[0]), callToAction: "LEARN_MORE" });
   assert.equal(spec.cards.length, 10);
   assert.deepEqual(spec.cards.map((card) => card.image), many.files.slice(0, 10).map((file) => path.basename(file)));
   assert.equal(spec.optimizeOrder, true);
@@ -104,7 +107,7 @@ test("message: the caption cut at a whole word within 125 characters, or the tit
 
 test("slides that are not square get a warning that says to render in Square", () => {
   const portrait = exportOf(3);
-  const { warnings } = buildMetaCarouselSpec({ exportDir: portrait.dir, files: portrait.files, deckTitle: "T", caption: "C", slides: SLIDES });
+  const { warnings } = buildMetaCarouselSpec({ exportDir: portrait.dir, files: portrait.files, deckTitle: "T", caption: "C", slides: SLIDES, callToAction: "LEARN_MORE" });
   assert.equal(warnings.length, 1);
   assert.match(warnings[0], /40x50.*square images \(1:1\).*Square and render again/);
 });
@@ -143,7 +146,9 @@ test("api, recipe and command: the file lands beside the slides and nothing touc
   assert.equal(reply.json.spec.cards.length, 5);
   assert.equal(reply.json.spec.message, "Selling out is a plan.");
   assert.equal(reply.json.spec.cards[0].headline, "Sell out by nine, not by chance.");
-  assert.equal(reply.json.warnings.length, 1, "the helper slides are 40x50, so one warning about square");
+  assert.equal(reply.json.warnings.length, 2, "the helper slides are 40x50, so one warning about square, and one about the call to action");
+  assert.match(reply.json.warnings[0], /square images/);
+  assert.equal(reply.json.warnings[1], NO_CTA_WARNING);
   assert.deepEqual(JSON.parse(fs.readFileSync(path.join(dir, SPEC_NAME), "utf8")), reply.json.spec);
   assert.ok(!JSON.stringify(reply.json).includes("made-up-secret-value"));
   assert.equal((await api.handle("export", "GET", { query: { id: ID } })).json.meta, `/api/export?id=${ID}&format=meta`);
@@ -191,5 +196,138 @@ test("api, recipe and command: the file lands beside the slides and nothing touc
   assert.equal(await main(["export-meta"], { stdout: () => {}, stderr: (chunk) => { usage += chunk; } }), 1);
   assert.match(usage, /Usage: carousel export-meta <id>/);
   assert.equal(await main(["export-meta", single, "--data", dataDir], { stdout: () => {}, stderr: () => {} }), 1);
+  assert.equal(fetchImpl.calls.length, 0);
+});
+
+test("call to action: LEARN_MORE with a warning when none is given, each of the eight values, and normalised input", () => {
+  assert.deepEqual([...META_CALL_TO_ACTIONS], CALLS_TO_ACTION);
+  assert.ok(Object.isFrozen(META_CALL_TO_ACTIONS));
+  const { dir, files } = exportOf(2, { width: 40, height: 40 });
+  const base = { exportDir: dir, files, deckTitle: "T", caption: "C", slides: SLIDES };
+
+  for (const none of [undefined, null, "", "   "]) {
+    const made = buildMetaCarouselSpec({ ...base, callToAction: none });
+    assert.equal(made.spec.callToAction, "LEARN_MORE");
+    assert.deepEqual(made.warnings, [NO_CTA_WARNING]);
+  }
+  const { callToAction: _left, ...without } = { ...base, callToAction: undefined };
+  assert.deepEqual(buildMetaCarouselSpec(without).warnings, [NO_CTA_WARNING]);
+
+  for (const value of CALLS_TO_ACTION) {
+    const made = buildMetaCarouselSpec({ ...base, callToAction: value });
+    assert.equal(made.spec.callToAction, value);
+    assert.deepEqual(made.warnings, [], `${value} is a choice, so there is no warning`);
+  }
+  for (const [given, expected] of [["shop now", "SHOP_NOW"], ["Shop-Now", "SHOP_NOW"], ["  sign_up ", "SIGN_UP"], ["get offer", "GET_OFFER"], ["download", "DOWNLOAD"]]) {
+    const made = buildMetaCarouselSpec({ ...base, callToAction: given });
+    assert.equal(made.spec.callToAction, expected, given);
+    assert.deepEqual(made.warnings, []);
+  }
+});
+
+test("call to action: a value outside the list throws invalid_call_to_action and no file is written", () => {
+  const { dir, files } = exportOf(2, { width: 40, height: 40 });
+  const base = { exportDir: dir, files, deckTitle: "T", caption: "C", slides: SLIDES };
+  const refused = (error) => {
+    assert.ok(error instanceof Error);
+    assert.equal(error.code, "invalid_call_to_action");
+    for (const value of CALLS_TO_ACTION) assert.ok(error.message.includes(value), `the message lists ${value}`);
+    return true;
+  };
+  for (const bad of ["BUY_NOW", "buy now", "learn more!", "LEARN", 7]) {
+    assert.throws(() => buildMetaCarouselSpec({ ...base, callToAction: bad }), refused, String(bad));
+    assert.throws(() => writeMetaCarouselSpec({ ...base, callToAction: bad }), refused, String(bad));
+  }
+  assert.ok(!fs.existsSync(path.join(dir, SPEC_NAME)), "nothing was written");
+
+  // A file from an earlier, valid request is left exactly as it was.
+  const first = writeMetaCarouselSpec({ ...base, callToAction: "book now" });
+  assert.equal(first.spec.callToAction, "BOOK_NOW");
+  const before = fs.readFileSync(first.file, "utf8");
+  assert.throws(() => writeMetaCarouselSpec({ ...base, callToAction: "BUY_NOW" }), refused);
+  assert.equal(fs.readFileSync(first.file, "utf8"), before);
+});
+
+test("call to action through the api, the recipe and the command", async () => {
+  const dataDir = tmpDir("carousel-meta-cta-");
+  const fetchImpl = mockFetch(() => { throw new Error("the handoff must not use the network"); });
+  store.saveDraft({ title: "Sell out by nine", size: "square", slides: SLIDES, caption: "Selling out is a plan.", hashtags: [] }, { dataDir, id: ID });
+  const dir = path.join(dataDir, "exports", ID);
+  writeExport(dir, 5, { size: { width: 40, height: 40 }, manifest: { title: "Sell out by nine" } });
+  const file = path.join(dir, SPEC_NAME);
+  const onDisk = () => JSON.parse(fs.readFileSync(file, "utf8")).callToAction;
+  const api = createApi({ dataDir, env: {}, fetchImpl });
+
+  // api: an invalid value is a 400 that lists the choices and writes nothing.
+  for (const query of [{ cta: "BUY_NOW" }, { callToAction: "nope" }]) {
+    const refused = await api.handle("export", "GET", { query: { id: ID, format: "meta", ...query } });
+    assert.equal(refused.status, 400, JSON.stringify(refused.json));
+    assert.equal(refused.json.code, "invalid_call_to_action");
+    for (const value of CALLS_TO_ACTION) assert.ok(refused.json.error.includes(value), value);
+    assert.ok(!fs.existsSync(file), "no file for a refused call to action");
+  }
+  const picked = await api.handle("export", "GET", { query: { id: ID, format: "meta", cta: "shop now" } });
+  assert.equal(picked.status, 200, JSON.stringify(picked.json));
+  assert.equal(picked.json.spec.callToAction, "SHOP_NOW");
+  assert.deepEqual(picked.json.warnings, []);
+  assert.equal(onDisk(), "SHOP_NOW");
+  assert.equal(picked.json.download, `/api/export?id=${ID}&format=meta&cta=SHOP_NOW&download=1`);
+  const download = await api.handle("export", "GET", { query: { id: ID, format: "meta", cta: "SHOP_NOW", download: "1" } });
+  assert.equal(JSON.parse(download.buffer.toString("utf8")).callToAction, "SHOP_NOW");
+  const long = await api.handle("export", "GET", { query: { id: ID, format: "meta", callToAction: "Sign-Up" } });
+  assert.equal(long.status, 200);
+  assert.equal(long.json.spec.callToAction, "SIGN_UP");
+  const plainReply = await api.handle("export", "GET", { query: { id: ID, format: "meta" } });
+  assert.equal(plainReply.json.spec.callToAction, "LEARN_MORE");
+  assert.deepEqual(plainReply.json.warnings, [NO_CTA_WARNING]);
+  // A refused value leaves the earlier file alone.
+  assert.equal((await api.handle("export", "GET", { query: { id: ID, format: "meta", cta: "BUY_NOW" } })).status, 400);
+  assert.equal(onDisk(), "LEARN_MORE");
+
+  // recipe: the value is passed through; an invalid one is an error with the same message.
+  const { runRecipe } = require("../recipes/export-meta-carousel.js");
+  const context = { env: {}, dataDir, fetchImpl };
+  const made = await runRecipe({ id: ID, callToAction: "get offer" }, context);
+  assert.equal(made.status, "ok", made.reply);
+  assert.equal(made.metadata.spec.callToAction, "GET_OFFER");
+  assert.match(made.reply, /call to action GET_OFFER/);
+  assert.deepEqual(made.metadata.warnings, []);
+  assert.equal(onDisk(), "GET_OFFER");
+  assert.equal((await runRecipe({ args: { id: ID, callToAction: "SUBSCRIBE" } }, context)).metadata.spec.callToAction, "SUBSCRIBE");
+  const byDefault = await runRecipe({ id: ID }, context);
+  assert.equal(byDefault.metadata.spec.callToAction, "LEARN_MORE");
+  assert.match(byDefault.reply, /Note: No call to action was given, so LEARN_MORE is used\./);
+  fs.rmSync(file);
+  const bad = await runRecipe({ id: ID, callToAction: "BUY_NOW" }, context);
+  assert.equal(bad.status, "error");
+  assert.equal(bad.metadata.written, false);
+  assert.equal(bad.metadata.code, "invalid_call_to_action");
+  assert.match(bad.reply, /LEARN_MORE, SHOP_NOW, SIGN_UP, BOOK_NOW, GET_OFFER, CONTACT_US, SUBSCRIBE, DOWNLOAD/);
+  assert.ok(!fs.existsSync(file));
+
+  // command: --cta and --call-to-action choose it; an invalid value prints the message and exits 1.
+  const { main } = require("../bin/carousel.js");
+  const runCli = async (args) => {
+    let stdout = "";
+    let stderr = "";
+    const code = await main(args, { stdout: (chunk) => { stdout += chunk; }, stderr: (chunk) => { stderr += chunk; } });
+    return { code, text: stdout + stderr };
+  };
+  const cli = await runCli(["export-meta", ID, "--cta", "contact us", "--data", dataDir]);
+  assert.equal(cli.code, 0, cli.text);
+  assert.match(cli.text, /call to action CONTACT_US/);
+  assert.equal(onDisk(), "CONTACT_US");
+  assert.equal((await runCli(["export-meta", ID, "--call-to-action=download", "--data", dataDir])).code, 0);
+  assert.equal(onDisk(), "DOWNLOAD");
+  assert.equal((await runCli(["export-meta", ID, "--data", dataDir])).code, 0);
+  assert.equal(onDisk(), "LEARN_MORE");
+  fs.rmSync(file);
+  const wrong = await runCli(["export-meta", ID, "--cta", "BUY_NOW", "--data", dataDir]);
+  assert.equal(wrong.code, 1);
+  assert.match(wrong.text, /"BUY_NOW" is not a call to action this handoff accepts\. Use one of: LEARN_MORE, SHOP_NOW, SIGN_UP, BOOK_NOW, GET_OFFER, CONTACT_US, SUBSCRIBE, DOWNLOAD\./);
+  assert.ok(!fs.existsSync(file));
+  let help = "";
+  await main(["--help"], { stdout: (chunk) => { help += chunk; }, stderr: () => {} });
+  assert.match(help, /carousel export-meta <id> \[--cta /);
   assert.equal(fetchImpl.calls.length, 0);
 });

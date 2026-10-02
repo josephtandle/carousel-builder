@@ -2,7 +2,8 @@
 
 // Writes a Meta ads carousel handoff file (meta-carousel.json) beside the slides of a
 // rendered carousel: the cards, the message and the call to action, with the page id, the
-// Instagram user id and the link left to fill in. Nothing is uploaded and Meta is never
+// Instagram user id and the link left to fill in. callToAction picks the call to action
+// (LEARN_MORE when it is left out). Nothing is uploaded and Meta is never
 // contacted: this only prepares a file for whoever builds the ad.
 const path = require("node:path");
 const engine = require("./_engine.js");
@@ -15,7 +16,10 @@ module.exports.runRecipe = async function runRecipe(input = {}, context = {}) {
   const api = lazy("lib/api.js");
   if (!api.ok) return errorReply(`The Meta handoff is not available: ${api.error}.`, { written: false });
 
-  const result = await api.mod.createApi({ dataDir: ctx.dataDir, env: ctx.env, fetchImpl: ctx.fetchImpl }).handle("export", "GET", { query: { id, format: "meta" } });
+  const query = { id, format: "meta" };
+  const callToAction = value(input, "callToAction", "");
+  if (callToAction !== undefined && callToAction !== null && String(callToAction).trim()) query.callToAction = String(callToAction);
+  const result = await api.mod.createApi({ dataDir: ctx.dataDir, env: ctx.env, fetchImpl: ctx.fetchImpl }).handle("export", "GET", { query });
   const body = result.json || {};
   if (result.status !== 200 || body.ok !== true) return errorReply(body.error || "The Meta handoff file could not be written.", { written: false, code: body.code || null });
 

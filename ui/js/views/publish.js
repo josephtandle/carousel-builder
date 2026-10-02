@@ -192,12 +192,23 @@ export function PublishBar() {
         ];
       });
     // Meta ads handoff: one JSON file for whoever builds the ad. Nothing is sent to Meta.
-    const meta = { status: "idle", data: null, error: null };
+    const meta = { status: "idle", data: null, error: null, cta: "LEARN_MORE" };
+    const CTA_LABELS = [["LEARN_MORE", "Learn more"], ["SHOP_NOW", "Shop now"], ["SIGN_UP", "Sign up"], ["BOOK_NOW", "Book now"], ["GET_OFFER", "Get offer"], ["CONTACT_US", "Contact us"], ["SUBSCRIBE", "Subscribe"], ["DOWNLOAD", "Download"]];
+    // The select has an id and sits at the same depth in both states of the panel, so a redraw
+    // keeps the very node the person is using. Changing it writes the handoff again once one exists.
+    function ctaField() {
+      return h(
+        "div",
+        { class: "stack-xs" },
+        h("label", { for: "meta-handoff-cta", class: "field-label" }, "Call to action"),
+        h("select", { id: "meta-handoff-cta", class: "input", onchange: (event) => { meta.cta = event.target.value; if (meta.data) makeMeta(); } }, CTA_LABELS.map(([value, label]) => h("option", { value, selected: value === meta.cta }, label)))
+      );
+    }
     const FILL_LABELS = { pageId: "the Facebook Page id", instagramUserId: "the Instagram account id", link: "the link the ad opens" };
     function metaSection() {
       const button = Button({ id: "meta-handoff-button", icon: "file", class: "btn-block", busy: meta.status === "loading", onclick: makeMeta }, meta.status === "ready" ? "Write it again" : "Meta ads handoff");
       if (meta.status !== "ready" || !meta.data) {
-        return h("div", { class: "stack-sm meta-handoff" }, h("p", { class: "muted" }, "Running this as an ad? Get the carousel as one file for Meta Ads."), button, meta.error ? InlineError({ message: meta.error }) : null);
+        return h("div", { class: "stack-sm meta-handoff" }, h("p", { class: "muted" }, "Running this as an ad? Get the carousel as one file for Meta Ads."), ctaField(), button, meta.error ? InlineError({ message: meta.error }) : null);
       }
       const { data } = meta;
       return h(
@@ -205,6 +216,7 @@ export function PublishBar() {
         { class: "stack-sm meta-handoff" },
         h("p", { class: "field-label strong" }, "Meta ads handoff"),
         h("p", { class: "muted break" }, `${data.spec.cards.length} cards written to ${data.file} in your data folder. Nothing was sent to Meta.`),
+        ctaField(),
         data.warnings.length ? Notice({ tone: "warn" }, h("ul", { class: "plain stack-xs" }, data.warnings.map((warning) => h("li", null, warning)))) : null,
         h("div", null, h("p", { class: "field-label gap-below" }, "Fill in before it is used"), h("ul", { class: "fill-list" }, data.fillIn.map((key) => h("li", null, h("code", { class: "accent-code" }, key), `: ${FILL_LABELS[key] || "your value"}`)))),
         h("a", { href: data.download, download: "meta-carousel.json", class: "btn btn-secondary btn-block" }, icon("download", 15), h("span", null, "Download meta-carousel.json")),
@@ -219,7 +231,12 @@ export function PublishBar() {
       try {
         const ready = await ensureRendered();
         if (!ready.rendered || !ready.id) throw new Error(ready.reason || "The slides could not be rendered.");
-        meta.data = await api(`export?id=${encodeURIComponent(ready.id)}&format=meta`);
+        // A choice changed while the file was being written is asked for again, so the file matches the select.
+        let asked;
+        do {
+          asked = meta.cta;
+          meta.data = await api(`export?id=${encodeURIComponent(ready.id)}&format=meta&cta=${encodeURIComponent(asked)}`);
+        } while (meta.cta !== asked);
         meta.status = "ready";
       } catch (error) {
         meta.status = "idle";

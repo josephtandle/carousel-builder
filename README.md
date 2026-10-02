@@ -68,7 +68,7 @@ Every command takes `--json` for the full result and `--data <dir>` to use anoth
 | `carousel list` | Saved carousels and publish history. |
 | `carousel status` | A plain language setup summary. |
 | `carousel doctor [--json]` | Reports chrome, llm, each image provider, each publisher and codexSeat. |
-| `carousel export-meta <id>` | Writes `meta-carousel.json` beside the slides: a Meta ads carousel handoff with three values left to fill in. Nothing is uploaded. |
+| `carousel export-meta <id> [--cta value]` | Writes `meta-carousel.json` beside the slides: a Meta ads carousel handoff with three values left to fill in. Nothing is uploaded. |
 | `carousel templates [--previews] [--size s]` | Lists the templates by group. `--previews` builds the preview images in your brand and prints their folder. |
 | `carousel ui [--port n] [--no-open]` | Starts the browser UI on this machine. |
 
@@ -268,11 +268,11 @@ All four adapters are covered by tests against mocked HTTP. None of them is exer
 | `find-backgrounds` | `query`, optional `count`, `orientation`, `provider`; or `generate: true` with `prompt` |
 | `publish-carousel` | `id` or `exportDir` (inside the data dir), `targets`, optional `caption`, `captionFile`, `title`, `dryRun`; to post, `confirm: "PUBLISH"` plus the `confirmToken` a dry run returned (`metadata.confirmToken`) |
 | `list-carousels` | optional `limit` |
-| `export-meta-carousel` | `id` of a rendered carousel |
+| `export-meta-carousel` | `id` of a rendered carousel, optional `callToAction` |
 
 ### Meta ads handoff
 
-`export-meta-carousel` (also `carousel export-meta <id>`, and "Meta ads handoff" under Export in the browser UI) writes `meta-carousel.json` into the export folder: a name, the message (your caption, cut to 125 characters at a whole word), a `LEARN_MORE` call to action and 2 to 10 cards, each an image file name and a headline of up to 40 characters taken from the slide. `pageId`, `instagramUserId` and `link` are left as `FILL_IN_...` placeholders for whoever builds the ad. A deck over 10 slides uses the first 10, 6 or more cards switch `optimizeOrder` on, and slides that are not square come with a note to render in Square, which Meta prefers. It is a file and nothing more: the engine never contacts Meta, never uploads and never puts a token in it.
+`export-meta-carousel` (also `carousel export-meta <id>`, and "Meta ads handoff" under Export in the browser UI) writes `meta-carousel.json` into the export folder: a name, the message (your caption, cut to 125 characters at a whole word), a call to action and 2 to 10 cards, each an image file name and a headline of up to 40 characters taken from the slide. `pageId`, `instagramUserId` and `link` are left as `FILL_IN_...` placeholders for whoever builds the ad. A deck over 10 slides uses the first 10, 6 or more cards switch `optimizeOrder` on, and slides that are not square come with a note to render in Square, which Meta prefers. The call to action is `LEARN_MORE` unless you choose one of `LEARN_MORE`, `SHOP_NOW`, `SIGN_UP`, `BOOK_NOW`, `GET_OFFER`, `CONTACT_US`, `SUBSCRIBE` or `DOWNLOAD` with `callToAction` on the recipe, `--cta` on the command, `cta=` on the API or the "Call to action" list in the browser UI ("shop now" and "Shop-Now" both read as `SHOP_NOW`); leaving it out adds a warning, and any other value is refused before a file is written. It is a file and nothing more: the engine never contacts Meta, never uploads and never puts a token in it.
 
 `context` may carry `env`, `dataDir` and `fetchImpl`, which is how the tests run every recipe without a network.
 

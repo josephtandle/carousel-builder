@@ -20,7 +20,7 @@ Usage:
   carousel list [--limit n]
   carousel status
   carousel doctor [--json]
-  carousel export-meta <id>
+  carousel export-meta <id> [--cta LEARN_MORE|SHOP_NOW|SIGN_UP|BOOK_NOW|GET_OFFER|CONTACT_US|SUBSCRIBE|DOWNLOAD]
   carousel templates [--json] [--previews] [--size s]
   carousel ui [--port n] [--no-open]
 
@@ -45,7 +45,7 @@ A value that starts with "--" (a caption, say) is safest as --caption="--text".`
 const BOOLEAN_FLAGS = new Set(["json", "generate", "dry-run", "help", "no-render", "render", "no-open", "previews", "force"]);
 // Flags that always take the next argument as their value, even when that
 // value itself starts with "--".
-const VALUE_FLAGS = new Set(["to", "caption", "caption-file", "title", "confirm", "confirm-token", "token", "out", "size", "slides", "source", "count", "orientation", "provider", "data", "limit", "port"]);
+const VALUE_FLAGS = new Set(["to", "caption", "caption-file", "title", "confirm", "confirm-token", "token", "out", "size", "slides", "source", "count", "orientation", "provider", "data", "limit", "port", "cta", "call-to-action"]);
 
 // "--flag=value" on a switch: only "false" or "0" turns it off. Anything else
 // (true, 1, yes, an empty value) leaves it on, so --dry-run=true is a dry run.
@@ -198,10 +198,11 @@ async function main(argv, io = {}) {
   if (command === "export-meta") {
     const ref = positional[1];
     if (!ref) {
-      err("Usage: carousel export-meta <id>\n");
+      err("Usage: carousel export-meta <id> [--cta value]\n");
       return 1;
     }
-    const result = await recipe("export-meta-carousel").runRecipe({ id: ref }, context);
+    const cta = typeof flags.cta === "string" ? flags.cta : typeof flags["call-to-action"] === "string" ? flags["call-to-action"] : "";
+    const result = await recipe("export-meta-carousel").runRecipe({ id: ref, callToAction: cta }, context);
     print(result, flags);
     return result.status === "ok" ? 0 : 1;
   }
