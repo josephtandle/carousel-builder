@@ -23,6 +23,7 @@ Usage:
   carousel export-meta <id> [--cta LEARN_MORE|SHOP_NOW|SIGN_UP|BOOK_NOW|GET_OFFER|CONTACT_US|SUBSCRIBE|DOWNLOAD]
   carousel templates [--json] [--previews] [--size s]
   carousel ui [--port n] [--no-open]
+  carousel update [status|on|off|register|unregister]
 
 Global flags:
   --json        print the full result as JSON
@@ -39,6 +40,12 @@ that port). The page is served only to the browser opened with the one-time
 link the command makes; --no-open prints that link. Press Ctrl+C to stop it.
 Publishing from the page still shows the dry run first and waits for you to
 press the final button.
+
+carousel update pulls the latest version of this clone from its origin right
+now (a weekly job does the same on its own): it backs up your brand, config and
+data files first, runs the self-test, rolls back if that fails, and prints what
+changed. "update off" stops the weekly job's work, "update on" resumes it,
+"update status" shows the last check, "update register" installs the weekly job.
 
 A value that starts with "--" (a caption, say) is safest as --caption="--text".`;
 
@@ -113,6 +120,24 @@ async function main(argv, io = {}) {
   if (command === "status") {
     print(await recipe("status").runRecipe({}, context), flags);
     return 0;
+  }
+
+  if (command === "update") {
+    // Shared All Sorted self-updater (scripts/self-update.js). It only works
+    // inside a git clone and never touches your brand, config or data files.
+    const updater = require(path.join(__dirname, "..", "scripts", "self-update.js"));
+    const modes = { status: "--status", on: "--on", off: "--off", register: "--register", unregister: "--unregister", check: "--check" };
+    const sub = positional[1];
+    if (sub !== undefined && !(sub in modes)) {
+      err("Usage: carousel update [status|on|off|register|unregister]\n");
+      return 1;
+    }
+    const args = sub ? [modes[sub]] : ["--now"];
+    if (sub === "check") args.push("--now");
+    const lines = [];
+    const code = updater.main(args, { log: (line) => lines.push(line) });
+    out(lines.length ? `${lines.join("\n")}\n` : "");
+    return code;
   }
 
   if (command === "list") {

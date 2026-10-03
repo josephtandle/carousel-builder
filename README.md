@@ -72,6 +72,8 @@ Every command takes `--json` for the full result and `--data <dir>` to use anoth
 | `carousel templates [--previews] [--size s]` | Lists the templates by group. `--previews` builds the preview images in your brand and prints their folder. |
 | `carousel ui [--port n] [--no-open]` | Starts the browser UI on this machine. |
 
+**Which browser renders.** One browser process renders a whole deck (every slide is a tab in it, closed after its capture), and a headless-only binary is preferred over a GUI app, so nothing flashes in the Dock. The search order is `CHROME_BIN` first; then `chrome-headless-shell` from Playwright's cache (`PLAYWRIGHT_BROWSERS_PATH`, else `~/Library/Caches/ms-playwright`, `~/.cache/ms-playwright` or `%LOCALAPPDATA%\ms-playwright`, newest revision first) or Chrome for Testing's layout under Puppeteer's cache (`PUPPETEER_CACHE_DIR`, else `~/.cache/puppeteer`) or on `PATH`; then the Chrome, Chromium or Edge app bundles and the usual Linux binary names. Set `CAROUSEL_PREFER_APP_BUNDLE=1` to skip the headless shells and use the app bundle as before. `CAROUSEL_RENDER_CONCURRENCY` is how many tabs render at once, never how many browsers. If one process ever starts more than three browsers in ten seconds, the renderer logs one warning naming the cause and carries on.
+
 ## Where things live
 
 The data dir is `$CAROUSEL_HOME`, or `.carousel` in the folder you run from.
@@ -297,4 +299,4 @@ The suite uses a scripted fetch throughout and makes no network calls.
 
 ## Licence
 
-MIT. See `LICENSE`. Bundled fonts carry their own open licences: see `kit/fonts/FONTS-NOTICE.txt`.
+All Sorted Personal Use License. See `LICENSE`. Bundled fonts carry their own open licences: see `kit/fonts/FONTS-NOTICE.txt`.

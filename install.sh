@@ -98,3 +98,13 @@ say ""
 say "Or do all of it in your browser:       $RUN ui"
 say ""
 say "Nothing leaves this machine until you set a provider key or a publisher token and confirm a publish."
+
+# Weekly self-update: on by default, one line turns it off. It fast-forwards
+# this clone from its origin, never touches the data dir, brand.json or any
+# file you made, backs up first and rolls back if the self-test fails.
+say ""
+if [ "${CAROUSEL_SKIP_UPDATES:-0}" = "1" ]; then
+  say "Weekly updates not scheduled (CAROUSEL_SKIP_UPDATES=1). Later: node \"$ENGINE_DIR/scripts/self-update.js\" --register"
+else
+  node "$ENGINE_DIR/scripts/self-update.js" --register || say "Weekly updates could not be scheduled. Try later: node \"$ENGINE_DIR/scripts/self-update.js\" --register"
+fi

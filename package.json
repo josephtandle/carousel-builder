@@ -1,13 +1,14 @@
 {
   "name": "carousel-builder",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Build, export and publish social carousels from a brief: brand kit, layout-checked rendering, background image chain and confirmation-gated publishing. Zero npm dependencies.",
-  "license": "MIT",
+  "license": "SEE LICENSE IN LICENSE",
   "bin": {
     "carousel": "bin/carousel.js"
   },
   "scripts": {
     "test": "node --test test/index.js",
+    "selftest": "node bin/carousel.js doctor --json > /dev/null && node --test test/store.test.js test/copy.test.js test/deck-schema.test.js test/pdf.test.js test/publish.test.js test/publish-tiktok.test.js test/meta-handoff.test.js test/self-update.test.js",
     "doctor": "node bin/carousel.js doctor"
   },
   "engines": {

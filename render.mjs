@@ -34,7 +34,7 @@ import { fileURLToPath } from "node:url";
 const require = createRequire(import.meta.url);
 const { loadBrand, readBrandFile, brandCss } = require("./lib/brand.js");
 const { validateDeck, upgradeDeck, resolveLayoutId, LAYOUTS, SIZES, DEFAULT_SIZE } = require("./lib/deck-schema.js");
-const { findChrome, chromeScreenshot, pngSize } = require("./lib/render.js");
+const { findChrome, launchBrowser, chromeScreenshot, pngSize } = require("./lib/render.js");
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const KIT = path.join(HERE, "kit");
@@ -231,7 +231,7 @@ async function renderSlide(job, ctx) {
     if (fs.existsSync(outAbs)) fs.unlinkSync(outAbs);
     let shot;
     try {
-      shot = await chromeScreenshot({ chromePath: ctx.chromePath, url: server.origin() + urlPath, out: outAbs, width: dims.w, height: dims.h, settle: qaPromise });
+      shot = await chromeScreenshot({ browser: ctx.browser, url: server.origin() + urlPath, out: outAbs, width: dims.w, height: dims.h, settle: qaPromise });
     } catch (e) {
       return failed([e.message]);
     }
@@ -269,12 +269,18 @@ async function pool(jobs, limit, fn) {
  * Render a list of jobs: [{ name, layout, fields (null = the layout's sample), slide, total, baseDir, out }].
  * Returns { ok, size, files, slides: [{ index, name, layout, file, ok, issues, fitScales, textElements, captures, ms }], qa: { ok, issues } }.
  * captures is how many screenshots the slide took: 1 normally, more when a corner looked unpainted and was captured again.
+ *
+ * One browser process serves the whole batch: every slide is a tab in it, closed after its capture, and the
+ * process is closed once at the end. `concurrency` (default CAROUSEL_RENDER_CONCURRENCY, then 2) is how many tabs
+ * render at once, never how many browsers. If the browser dies mid-batch the slides still open fail with that
+ * error, the slides still to come fail the same way at once, and the batch returns; nothing waits on a dead process.
  */
 export async function renderJobs(jobs, { brand, size = DEFAULT_SIZE, chromePath, allowDirs = [], dataDir, concurrency } = {}) {
   if (!Object.prototype.hasOwnProperty.call(SIZES, size)) throw Object.assign(new Error(`unknown size "${size}": use ${Object.keys(SIZES).join(", ")}`), { code: "invalid_size" });
   const chrome = chromePath || findChrome();
   if (!chrome) throw Object.assign(new Error("No Chrome, Chromium or Edge found. Install one, or set CHROME_BIN to its binary."), { code: "chrome_not_found" });
   const b = brand || loadBrand(dataDir);
+  const dims = SIZES[size];
 
   const allow = makeAllowlist();
   allow.addDir(KIT); allow.addDir(ASSETS);
@@ -286,15 +292,24 @@ export async function renderJobs(jobs, { brand, size = DEFAULT_SIZE, chromePath,
 
   const server = createServer();
   await server.start();
+  let browser = null;
   try {
     const css = brandCss(b, { assetUrl: (file) => (FONT_EXT.has(path.extname(file).toLowerCase()) && allow.allows(file) ? server.register(file) : "") });
-    const ctx = { brand: b, brandCss: css, size, chromePath: chrome, allow, server };
+    // one process for the batch (launchBrowser rejects with code chrome_not_found when the binary cannot run)
+    browser = await launchBrowser({ chromePath: chrome, width: dims.w, height: dims.h });
+    const ctx = { brand: b, brandCss: css, size, chromePath: chrome, browser, allow, server };
     const limit = Number(concurrency || process.env.CAROUSEL_RENDER_CONCURRENCY) || 2;
     const slides = await pool(jobs, limit, async (job, index) => {
       const t0 = Date.now();
       let qa;
-      try { qa = await renderSlide(job, ctx); }
-      catch (e) { qa = { ok: false, issues: [String(e && e.message || e)], textElements: 0, fitScales: {} }; }
+      if (!browser.alive) {
+        // the shared browser is gone: say so for this slide instead of opening a tab that cannot exist
+        let why = "the browser is gone"; await browser.exited.then((e) => { why = e.message; });
+        qa = { ok: false, issues: [why], textElements: 0, fitScales: {} };
+      } else {
+        try { qa = await renderSlide(job, ctx); }
+        catch (e) { qa = { ok: false, issues: [String(e && e.message || e)], textElements: 0, fitScales: {} }; }
+      }
       return { index: index + 1, name: job.name, layout: job.layout, file: path.resolve(job.out), ok: qa.ok === true, issues: qa.issues || [], fitScales: qa.fitScales || {}, textElements: qa.textElements || 0, captures: qa.captures || 0, ms: Date.now() - t0 };
     });
     const issues = [];
@@ -302,6 +317,7 @@ export async function renderJobs(jobs, { brand, size = DEFAULT_SIZE, chromePath,
     const ok = slides.every((s) => s.ok);
     return { ok, size, files: slides.filter((s) => fs.existsSync(s.file)).map((s) => s.file), slides, qa: { ok, issues } };
   } finally {
+    if (browser) await browser.close();
     server.close();
   }
 }

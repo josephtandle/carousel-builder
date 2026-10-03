@@ -11,6 +11,8 @@ require("./cli.test.js");
 require("./brand.test.js");
 require("./deck-schema.test.js");
 require("./render.test.js");
+require("./render-browser.test.js");
 require("./api.test.js");
 require("./ui-server.test.js");
 require("./meta-handoff.test.js");
+require("./self-update.test.js");
